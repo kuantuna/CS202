@@ -5,8 +5,8 @@ import java.sql.SQLException;
 public class TunaTuncerHW1
 {
     private static final String URL = "jdbc:mysql://localhost:3306/FoodHorse?useSSL=false";
-    private static final String username = "123";
-    private static final String password = "123";
+    private static final String username = System.getenv("UNAME");
+    private static final String password = System.getenv("PWORD");
     private static Connection connection = null;
 
     public static void establishConnection()
