@@ -31,3 +31,11 @@ CREATE TABLE IF NOT EXISTS FoodHorse.Order(
     FOREIGN KEY (pid) REFERENCES FoodHorse.Product(pid),
     FOREIGN KEY (bid) REFERENCES FoodHorse.Branch(bid)
 );
+
+CREATE TABLE IF NOT EXISTS FoodHorse.Stock(
+	quantity int NOT NULL,
+    pid int,
+    bid int,
+    FOREIGN KEY (pid) REFERENCES FoodHorse.Product(pid),
+    FOREIGN KEY (bid) REFERENCES FoodHorse.Branch(bid)
+);
