@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS FoodHorse.Order(
 );
 
 CREATE TABLE IF NOT EXISTS FoodHorse.Stock(
-	quantity int NOT NULL,
+    quantity int NOT NULL,
     pid int,
     bid int,
     FOREIGN KEY (pid) REFERENCES FoodHorse.Product(pid),
