@@ -1,8 +1,19 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Scanner;
+
+// Handle1()  DONE
+// Handle2()
+// Handle3()
+// Handle4()
+// Handle5()
+// Handle6()
+// Handle7()
+// Handle8()  DONE
+// Handle9()  DONE
+// Handle10() DONE
+// Handle11()
+// Handle12()
+// Handle13() NOTHING TO BE DONE
 
 public class TunaTuncerHW1{
     private static final String URL = "jdbc:mysql://localhost:3306/FoodHorse?useSSL=false";
@@ -55,12 +66,18 @@ public class TunaTuncerHW1{
         while(true){
             try{
                 userInput = Integer.parseInt(tempInput);
-                if(userInput>=1 && userInput<=13)
+                if(userInput>=1 && userInput<=13) {
                     break;
+                }
+                else{
+                    System.out.print("Your input is not between 1-13. Please enter a number between 1-13: ");
+                    tempInput = scanner.nextLine();
+                }
             }
-            catch(NumberFormatException nfe){}
-            System.out.print("Your input was invalid, please enter a number between 1-13: ");
-            tempInput = scanner.nextLine();
+            catch(Exception e) {
+                System.out.print("Your input was invalid, please enter a number between 1-13: ");
+                tempInput = scanner.nextLine();
+            }
         }
     }
     public static String getCustomerInfo(String info){
@@ -68,8 +85,9 @@ public class TunaTuncerHW1{
         String customerInfo = scanner.nextLine();
         if(info.equals("phone number")){
             while(true){
-                if(customerInfo.length()==11)
+                if(customerInfo.length()==11) {
                     break;
+                }
                 System.out.println("Phone number must be 11 digits. Like (05551112233)");
                 System.out.print("Please enter customer phone number: ");
                 customerInfo = scanner.nextLine();
@@ -77,8 +95,9 @@ public class TunaTuncerHW1{
         }
         else{
             while(true){
-                if(customerInfo.length()<=30)
+                if(customerInfo.length()<=30) {
                     break;
+                }
                 System.out.println(info.substring(0,1).toUpperCase() + info.substring(1) + " can be up to 30 letters.");
                 System.out.print("Please enter customer " + info +": ");
                 customerInfo = scanner.nextLine();
@@ -107,6 +126,8 @@ public class TunaTuncerHW1{
         String customerPhoneNumber = getCustomerInfo("phone number");
         createCustomer(customerName, customerSurname, customerAddress, customerPhoneNumber);
     }
+
+    
     public static void handle2(){
         System.out.println(2);
     }
@@ -131,8 +152,9 @@ public class TunaTuncerHW1{
         String branchInfo = scanner.nextLine();
         if(info.equals("name")){
             while(true){
-                if(branchInfo.length()<=50)
+                if(branchInfo.length()<=50) {
                     break;
+                }
                 System.out.println("Name can be up to 50 letters.");
                 System.out.print("Please enter branch name: ");
                 branchInfo = scanner.nextLine();
@@ -140,8 +162,9 @@ public class TunaTuncerHW1{
         }
         else if(info.equals("address")){
             while(true){
-                if(branchInfo.length()<=30)
+                if(branchInfo.length()<=30) {
                     break;
+                }
                 System.out.println("Address can be up to 30 letters.");
                 System.out.print("Please enter branch address: ");
                 branchInfo = scanner.nextLine();
@@ -171,8 +194,9 @@ public class TunaTuncerHW1{
         String productInfo = scanner.nextLine();
         if(info.equals("name")){
             while(true){
-                if(productInfo.length()<=50)
+                if(productInfo.length()<=50) {
                     break;
+                }
                 System.out.println("Name can be up to 50 letters.");
                 System.out.print("Please enter product name: ");
                 productInfo = scanner.nextLine();
@@ -180,8 +204,9 @@ public class TunaTuncerHW1{
         }
         else if(info.equals("description")){
             while(true){
-                if(productInfo.length()<=100)
+                if(productInfo.length()<=100) {
                     break;
+                }
                 System.out.println("Description can be up to 100 letters.");
                 System.out.print("Please enter product description: ");
                 productInfo = scanner.nextLine();
@@ -190,27 +215,113 @@ public class TunaTuncerHW1{
         else if(info.equals("price")){
             while(true){
                 try{
-                    float trial = Integer.parseInt(productInfo);
-                    break;
+                    Float.parseFloat(productInfo);
+                    if(Float.parseFloat(productInfo)>0){
+                        break;
+                    }
+                    else{
+                        System.out.print("Price must be greater than 0. Please enter price: ");
+                    }
                 }
-                catch(Exception e){}
-                System.out.print("Your input was invalid, please enter a float number: ");
-                productInfo = scanner.nextLine();
+                catch(Exception e) {
+                    System.out.print("Your input was invalid, please enter a float number: ");
+                    productInfo = scanner.nextLine();
+                }
             }
         }
         return productInfo;
     }
     public static void createProduct(String productName, String productDescription, float productPrice){
-        // Buradan devam!
+        try{
+            Statement productStatement = connection.createStatement();
+            String addProductQuery = "INSERT INTO Product(pname, pdescription, price) "
+                    + "VALUES('" + productName + "', '" + productDescription + "', '" + productPrice + "')";
+            productStatement.executeUpdate(addProductQuery);
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
     }
     public static void handle9(){
         String productName = getProductInfo("name");
         String productDescription = getProductInfo("description");
         float productPrice = Float.parseFloat(getProductInfo("price"));
+        createProduct(productName, productDescription, productPrice);
+    }
 
+    public static String getStockInfo(String info){
+        String stockInfo = "";
+        if(info.equals("product") || info.equals("branch")){
+            boolean brk = false;
+            System.out.print("Please enter " + info + " id: ");
+            stockInfo = scanner.nextLine();
+            while(true){
+                try{
+                    Integer.parseInt(stockInfo);
+                    // I need to check if it exists in the db.
+                    Statement statement = connection.createStatement();
+                    String selectQuery = "SELECT * FROM " + info;
+                    ResultSet resultSet = statement.executeQuery(selectQuery);
+                    while(resultSet.next()){
+                        int id = resultSet.getInt(info.substring(0,1) + "id");
+                        if(id == Integer.parseInt(stockInfo)){
+                            brk = true;
+                            break;
+                        }
+                    }
+                    if(brk){
+                        break;
+                    }
+                    System.out.print("Your " + info + " id is not in the database. Please enter a valid id: ");
+                    stockInfo = scanner.nextLine();
+                }
+                catch(NumberFormatException nfe) {
+                    System.out.print("Your input was invalid, please enter a number for " + info + " id: ");
+                    stockInfo = scanner.nextLine();
+                }
+                catch(SQLException sqlExc){
+                    sqlExc.printStackTrace();
+                }
+            }
+        }
+        else if(info.equals("quantity")){
+            System.out.print("Please enter quantity: ");
+            stockInfo = scanner.nextLine();
+            while(true){
+                try{
+                    Integer.parseInt(stockInfo);
+                    if(Integer.parseInt(stockInfo)>0){
+                        break;
+                    }
+                    else{
+                        System.out.print("Your quantity must be greater than 0. Please enter quantity:  ");
+                        stockInfo = scanner.nextLine();
+                    }
+                }
+                catch(NumberFormatException nfe) {
+                    System.out.print("Your input was invalid, please enter a number for quantity: ");
+                    stockInfo = scanner.nextLine();
+                }
+            }
+        }
+        return stockInfo;
+    }
+    public static void createStock(int quantity, int productId, int branchId){
+        try{
+            Statement stockStatement = connection.createStatement();
+            String addStockQuery = "INSERT INTO Stock(quantity, pid, bid) "
+                    + "VALUES('" + quantity + "', '" + productId + "', '" + branchId + "')";
+            stockStatement.executeUpdate(addStockQuery);
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
     }
     public static void handle10(){
-
+        int productId = Integer.parseInt(getStockInfo("product"));
+        int branchId = Integer.parseInt(getStockInfo("branch"));
+        int quantity = Integer.parseInt(getStockInfo("quantity"));
+        createStock(quantity, productId, branchId);
     }
     public static void handle11(){
 
