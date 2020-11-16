@@ -147,6 +147,7 @@ public class TunaTuncerHW1{
                     + "VALUES('" + customerName + "', '" + customerSurname + "', '" + customerAddress
                     + "', '" + customerPhoneNumber + "')";
             customerStatement.executeUpdate(addCustomerQuery);
+            System.out.println("Customer has been added to the db successfully.");
         }
         catch(SQLException e){
             e.printStackTrace();
@@ -343,7 +344,7 @@ public class TunaTuncerHW1{
         ArrayList<String> orderDates = new ArrayList<String>();
         try{
             Statement statement = connection.createStatement();
-            String orderDateQuery = "SELECT * FROM Order";
+            String orderDateQuery = "SELECT * FROM Orders";
             ResultSet resultSet = statement.executeQuery(orderDateQuery);
             while(resultSet.next()){
                 if(customerId == resultSet.getInt("cid")){
@@ -362,18 +363,17 @@ public class TunaTuncerHW1{
         }
         try{
             Statement statement = connection.createStatement();
-            String orderQuery = "SELECT * FROM Order";
-            ResultSet resultSet = statement.executeQuery(orderQuery);
+            String orderQuery = "SELECT * FROM Orders";
             for(String date: customerDates){
+                ResultSet resultSet = statement.executeQuery(orderQuery);
                 while(resultSet.next()){
                     if(resultSet.getString("odate").equals(date)){
                         System.out.println("OrderDate:" + date + "\tCustomerId:" + resultSet.getInt("cid")
-                        + "\tProductId:" + resultSet.getInt("pid") + "\tBranchId:"
-                                        + resultSet.getInt("bid"));
+                                + "\tProductId:" + resultSet.getInt("pid") + "\tBranchId:"
+                                + resultSet.getInt("bid"));
                     }
                 }
             }
-
         }
         catch(SQLException sqlExc){
             sqlExc.printStackTrace();
