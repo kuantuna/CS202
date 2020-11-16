@@ -7,12 +7,12 @@ import java.util.Scanner;
 // Handle4()  DONE BUT UNABLE TO TEST BC THERE IS NO DATA IN ORDER TABLE     BY THE WAY CAN BE IMPROVED
 // Handle5()
 // Handle6()  DONE
-// Handle7()
+// Handle7()  DONE
 // Handle8()  DONE
 // Handle9()  DONE
 // Handle10() DONE
 // Handle11() DONE BUT NOT PERFECT
-// Handle12()
+// Handle12() DONE
 // Handle13() NOTHING TO BE DONE
 
 public class TunaTuncerHW1{
@@ -113,7 +113,7 @@ public class TunaTuncerHW1{
                     String selectQuery = "SELECT * FROM Customer";
                     ResultSet resultSet = statement.executeQuery(selectQuery);
                     while(resultSet.next()){
-                        int id = resultSet.getInt( "cid");
+                        int id = resultSet.getInt("cid");
                         if(id == Integer.parseInt(customerInfo)){
                             brk = true;
                             break;
@@ -215,7 +215,7 @@ public class TunaTuncerHW1{
         boolean firstEntrance = true;
         try{
             Statement statement = connection.createStatement();
-            String selectQuery = "SELECT * FROM Order";
+            String selectQuery = "SELECT * FROM Orders";
             ResultSet resultSet = statement.executeQuery(selectQuery);
             while(resultSet.next()){
                 if(customerId == resultSet.getInt("cid")){
@@ -271,8 +271,36 @@ public class TunaTuncerHW1{
     public static void handle6(){
         listBranchInfo();
     }
-    public static void handle7(){
 
+    public static void listBranchsOrders(int branchId){
+        boolean firstEntrance = true;
+        try{
+            Statement statement = connection.createStatement();
+            String selectQuery = "SELECT * FROM Orders";
+            ResultSet resultSet = statement.executeQuery(selectQuery);
+            while(resultSet.next()){
+                if(branchId == resultSet.getInt("bid")){
+                    if(firstEntrance){
+                        System.out.println("##############################################");
+                        System.out.println("ORDER INFORMATION");
+                    }
+                    firstEntrance = false;
+                    String orderDate = resultSet.getString("odate");
+                    int productId = resultSet.getInt("pid");
+                    int customerId = resultSet.getInt("cid");
+                    System.out.println("OrderDate:" + orderDate+ "\tID:" + customerId + "\tProductID:" + productId
+                            + "\tBranchID:" + branchId);
+                }
+            }
+            System.out.println("##############################################");
+        }
+        catch(SQLException sqlExc){
+            sqlExc.printStackTrace();
+        }
+    }
+    public static void handle7(){
+        int branchId = Integer.parseInt(getBranchInfo("id"));
+        listBranchsOrders(branchId);
     }
 
     public static String getBranchInfo(String info){
@@ -296,6 +324,37 @@ public class TunaTuncerHW1{
                 System.out.println("Address can be up to 30 letters.");
                 System.out.print("Please enter branch address: ");
                 branchInfo = scanner.nextLine();
+            }
+        }
+        else if(info.equals("id")){
+            boolean brk = false;
+            while(true){
+                try{
+                    Integer.parseInt(branchInfo);
+                    // I need to check if it exists in the db.
+                    Statement statement = connection.createStatement();
+                    String selectQuery = "SELECT * FROM Branch";
+                    ResultSet resultSet = statement.executeQuery(selectQuery);
+                    while(resultSet.next()){
+                        int id = resultSet.getInt("bid");
+                        if(id == Integer.parseInt(branchInfo)){
+                            brk = true;
+                            break;
+                        }
+                    }
+                    if(brk){
+                        break;
+                    }
+                    System.out.print("Your branch id is not in the database. Please enter a valid id: ");
+                    branchInfo = scanner.nextLine();
+                }
+                catch(NumberFormatException nfe) {
+                    System.out.print("Your input was invalid, please enter a number for branch id: ");
+                    branchInfo = scanner.nextLine();
+                }
+                catch(SQLException sqlExc){
+                    sqlExc.printStackTrace();
+                }
             }
         }
         return branchInfo;
@@ -456,8 +515,23 @@ public class TunaTuncerHW1{
         String customerPhoneNumber = getCustomerInfo("phone number");
         listCustomerInfo(customerPhoneNumber);
     }
-    public static void handle12(){
 
+    public static void deleteCustomersInfo(int customerId){
+        try{
+            Statement statement = connection.createStatement();
+            String deleteQueryInOrders = "DELETE FROM Orders WHERE cid='" + customerId + "'";
+            statement.executeUpdate(deleteQueryInOrders);
+            String deleteQueryInCustomer = "DELETE FROM Customer WHERE cid='" + customerId + "'";
+            statement.executeUpdate(deleteQueryInCustomer);
+            System.out.println("Customer and her/his orders has been deleted successfully.");
+        }
+        catch(SQLException sqlExc){
+            sqlExc.printStackTrace();
+        }
+    }
+    public static void handle12(){
+        int customerId = Integer.parseInt(getCustomerInfo("id"));
+        deleteCustomersInfo(customerId);
     }
     public static void handle13(){
 
