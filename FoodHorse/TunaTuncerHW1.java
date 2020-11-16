@@ -4,7 +4,7 @@ import java.util.Scanner;
 // Handle1()  DONE
 // Handle2()
 // Handle3()  DONE
-// Handle4()
+// Handle4()  DONE BUT UNABLE TO TEST BC THERE IS NO DATA IN ORDER TABLE
 // Handle5()
 // Handle6()
 // Handle7()
@@ -93,7 +93,7 @@ public class TunaTuncerHW1{
                 customerInfo = scanner.nextLine();
             }
         }
-        else{
+        else if(info.equals("name")||info.equals("surname")||info.equals("address")) {
             while(true){
                 if(customerInfo.length()<=30) {
                     break;
@@ -101,6 +101,37 @@ public class TunaTuncerHW1{
                 System.out.println(info.substring(0,1).toUpperCase() + info.substring(1) + " can be up to 30 letters.");
                 System.out.print("Please enter customer " + info +": ");
                 customerInfo = scanner.nextLine();
+            }
+        }
+        else if(info.equals("id")){
+            boolean brk = false;
+            while(true){
+                try{
+                    Integer.parseInt(customerInfo);
+                    // I need to check if it exists in the db.
+                    Statement statement = connection.createStatement();
+                    String selectQuery = "SELECT * FROM Customer";
+                    ResultSet resultSet = statement.executeQuery(selectQuery);
+                    while(resultSet.next()){
+                        int id = resultSet.getInt( "cid");
+                        if(id == Integer.parseInt(customerInfo)){
+                            brk = true;
+                            break;
+                        }
+                    }
+                    if(brk){
+                        break;
+                    }
+                    System.out.print("Your customer id is not in the database. Please enter a valid id: ");
+                    customerInfo = scanner.nextLine();
+                }
+                catch(NumberFormatException nfe) {
+                    System.out.print("Your input was invalid, please enter a number for customer id: ");
+                    customerInfo = scanner.nextLine();
+                }
+                catch(SQLException sqlExc){
+                    sqlExc.printStackTrace();
+                }
             }
         }
         return customerInfo;
@@ -159,8 +190,36 @@ public class TunaTuncerHW1{
     public static void handle3(){
         listCustomerInfo();
     }
+
+    public static void listCustomersOrders(int customerId){
+        boolean firstEntrance = true;
+        try{
+            Statement statement = connection.createStatement();
+            String selectQuery = "SELECT * FROM Order";
+            ResultSet resultSet = statement.executeQuery(selectQuery);
+            while(resultSet.next()){
+                if(customerId == resultSet.getInt("cid")){
+                    if(firstEntrance){
+                        System.out.println("---------------------------------------------");
+                        System.out.println("ORDER INFORMATION");
+                    }
+                    firstEntrance = false;
+                    String orderDate = resultSet.getString("odate");
+                    int productId = resultSet.getInt("pid");
+                    int branchId = resultSet.getInt("bid");
+                    System.out.println("OrderDate:" + orderDate+ "\tID:" + customerId + "\tProductID:" + productId
+                    + "\tBranchID:" + branchId);
+                }
+            }
+            System.out.println("---------------------------------------------");
+        }
+        catch(SQLException sqlExc){
+            sqlExc.printStackTrace();
+        }
+    }
     public static void handle4(){
-        System.out.println(4);
+        int customerId = Integer.parseInt(getCustomerInfo("id"));
+        listCustomersOrders(customerId);
     }
     public static void handle5(){
 
