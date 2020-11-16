@@ -8,7 +8,7 @@ import java.util.Scanner;
 // Handle2()  DONE
 // Handle3()  DONE
 // Handle4()  DONE BUT UNABLE TO TEST BC THERE IS NO DATA IN ORDER TABLE     BY THE WAY CAN BE IMPROVED
-// Handle5()
+// Handle5()  DONE
 // Handle6()  DONE
 // Handle7()  DONE
 // Handle8()  DONE
