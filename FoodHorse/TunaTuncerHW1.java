@@ -2,7 +2,7 @@ import java.sql.*;
 import java.util.Scanner;
 
 // Handle1()  DONE
-// Handle2()
+// Handle2()  DONE
 // Handle3()  DONE
 // Handle4()  DONE BUT UNABLE TO TEST BC THERE IS NO DATA IN ORDER TABLE     BY THE WAY CAN BE IMPROVED
 // Handle5()
@@ -157,8 +157,71 @@ public class TunaTuncerHW1{
         String customerPhoneNumber = getCustomerInfo("phone number");
         createCustomer(customerName, customerSurname, customerAddress, customerPhoneNumber);
     }
+
+    public static String getOrderDate(){
+        System.out.print("Please enter order date. For ex(12.01.2020): ");
+        String orderDate = scanner.nextLine();
+        while(true){
+            if(orderDate.length()==10) {
+                //BURADA TARİH DÜZGÜN MÜ KONRTOL EDİLECEK!
+                break;
+            }
+            System.out.println("Order date must be 10 characters. Like (03.05.1984)");
+            System.out.print("Please enter order date: ");
+            orderDate = scanner.nextLine();
+        }
+        return orderDate;
+    }
+    public static void addOrder(int customerId, int productId, int branchId, String orderDate){
+        try{
+            Statement statement = connection.createStatement();
+            String addCustomerQuery = "INSERT INTO Orders(odate, cid, pid, bid) "
+                    + "VALUES('" + orderDate + "', '" + customerId + "', '" + productId
+                    + "', '" + branchId + "')";
+            statement.executeUpdate(addCustomerQuery);
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
+    public static int getQuantity(int productId, int branchId){
+        int quantity = 0;
+        try{
+            Statement statement = connection.createStatement();
+            String selectQuery = "SELECT * FROM Stock";
+            ResultSet resultSet = statement.executeQuery(selectQuery);
+            while(resultSet.next()){
+                if(productId == resultSet.getInt("pid" )&& branchId == resultSet.getInt("bid")){
+                    quantity = resultSet.getInt("quantity");
+                    break;
+                }
+            }
+        }
+        catch(SQLException sqlExc){
+            sqlExc.printStackTrace();
+        }
+        return quantity;
+    }
+    public static void uptadeStock(int productId, int branchId, int quantity){
+        quantity--;
+        try{
+            Statement statement = connection.createStatement();
+            String updateQuery = "UPDATE Stock " + "SET quantity = " + quantity
+                    + " WHERE (pid = " + productId + " AND bid = " + branchId + ")";
+            statement.executeUpdate(updateQuery);
+        }
+        catch(SQLException sqlExc){
+            sqlExc.printStackTrace();
+        }
+    }
     public static void handle2(){
-        System.out.println(2);
+        int customerId = Integer.parseInt(getCustomerInfo("id"));
+        int productId = Integer.parseInt(getProductInfo("id"));
+        int branchId = Integer.parseInt(getBranchInfo("id"));
+        String orderDate = getOrderDate();
+        addOrder(customerId, productId, branchId, orderDate);
+        int quantity = getQuantity(productId, branchId);
+        uptadeStock(productId, branchId ,quantity);
     }
 
     public static void listCustomerInfo(String info){
@@ -416,6 +479,37 @@ public class TunaTuncerHW1{
                 }
             }
         }
+        else if(info.equals("id")){
+            boolean brk = false;
+            while(true){
+                try{
+                    Integer.parseInt(productInfo);
+                    // I need to check if it exists in the db.
+                    Statement statement = connection.createStatement();
+                    String selectQuery = "SELECT * FROM Product";
+                    ResultSet resultSet = statement.executeQuery(selectQuery);
+                    while(resultSet.next()){
+                        int id = resultSet.getInt("pid");
+                        if(id == Integer.parseInt(productInfo)){
+                            brk = true;
+                            break;
+                        }
+                    }
+                    if(brk){
+                        break;
+                    }
+                    System.out.print("Your product id is not in the database. Please enter a valid id: ");
+                    productInfo = scanner.nextLine();
+                }
+                catch(NumberFormatException nfe) {
+                    System.out.print("Your input was invalid, please enter a number for product id: ");
+                    productInfo = scanner.nextLine();
+                }
+                catch(SQLException sqlExc){
+                    sqlExc.printStackTrace();
+                }
+            }
+        }
         return productInfo;
     }
     public static void createProduct(String productName, String productDescription, float productPrice){
@@ -493,7 +587,7 @@ public class TunaTuncerHW1{
         }
         return stockInfo;
     }
-    public static void createStock(int quantity, int productId, int branchId){
+    public static void addStock(int quantity, int productId, int branchId){
         try{
             Statement stockStatement = connection.createStatement();
             String addStockQuery = "INSERT INTO Stock(quantity, pid, bid) "
@@ -508,7 +602,7 @@ public class TunaTuncerHW1{
         int productId = Integer.parseInt(getStockInfo("product"));
         int branchId = Integer.parseInt(getStockInfo("branch"));
         int quantity = Integer.parseInt(getStockInfo("quantity"));
-        createStock(quantity, productId, branchId);
+        addStock(quantity, productId, branchId);
     }
 
     public static void handle11(){
