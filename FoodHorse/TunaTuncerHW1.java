@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 // Handle1()  DONE
 // Handle2()
-// Handle3()
+// Handle3()  DONE
 // Handle4()
 // Handle5()
 // Handle6()
@@ -126,13 +126,38 @@ public class TunaTuncerHW1{
         String customerPhoneNumber = getCustomerInfo("phone number");
         createCustomer(customerName, customerSurname, customerAddress, customerPhoneNumber);
     }
-
-    
     public static void handle2(){
         System.out.println(2);
     }
+
+    public static void listCustomerInfo(){
+        boolean firstEntrance = true;
+        try{
+            Statement statement = connection.createStatement();
+            String selectQuery = "SELECT * FROM Customer";
+            ResultSet resultSet = statement.executeQuery(selectQuery);
+            while(resultSet.next()){
+                if(firstEntrance){
+                    System.out.println("---------------------------------------------");
+                    System.out.println("CUSTOMER INFORMATION");
+                }
+                firstEntrance = false;
+                int customerId = resultSet.getInt("cid");
+                String customerName = resultSet.getString("fname");
+                String customerSurname = resultSet.getString("lname");
+                String customerAddress = resultSet.getString("caddress");
+                String customerPhoneNumber = resultSet.getString("pnum");
+                System.out.println("ID:" + customerId + "\tName:" + customerName + "\tSurname:" + customerSurname
+                + "\tAddress:" + customerAddress + "\tPhoneNumber:" + customerPhoneNumber);
+            }
+            System.out.println("---------------------------------------------");
+        }
+        catch(SQLException sqlExc){
+            sqlExc.printStackTrace();
+        }
+    }
     public static void handle3(){
-        System.out.println(3);
+        listCustomerInfo();
     }
     public static void handle4(){
         System.out.println(4);
