@@ -1,4 +1,3 @@
-import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,14 +6,14 @@ import java.util.Scanner;
 // Handle1()  DONE
 // Handle2()  DONE
 // Handle3()  DONE
-// Handle4()  DONE BUT UNABLE TO TEST BC THERE IS NO DATA IN ORDER TABLE     BY THE WAY CAN BE IMPROVED
+// Handle4()  DONE     CAN BE IMPROVED
 // Handle5()  DONE
 // Handle6()  DONE
 // Handle7()  DONE
 // Handle8()  DONE
 // Handle9()  DONE
 // Handle10() DONE
-// Handle11() DONE BUT NOT PERFECT
+// Handle11() DONE
 // Handle12() DONE
 // Handle13() NOTHING TO BE DONE
 
@@ -139,7 +138,7 @@ public class TunaTuncerHW1{
         }
         return customerInfo;
     }
-    public static void createCustomer(String customerName, String customerSurname,
+    public static void addCustomer(String customerName, String customerSurname,
                                       String customerAddress, String customerPhoneNumber){
         try{
             Statement customerStatement = connection.createStatement();
@@ -153,15 +152,6 @@ public class TunaTuncerHW1{
             e.printStackTrace();
         }
     }
-
-    public static void handle1(){
-        String customerName = getCustomerInfo("name");
-        String customerSurname = getCustomerInfo("surname");
-        String customerAddress = getCustomerInfo("address");
-        String customerPhoneNumber = getCustomerInfo("phone number");
-        createCustomer(customerName, customerSurname, customerAddress, customerPhoneNumber);
-    }
-
     public static String getOrderDate(){
         System.out.print("Please enter order date. For ex(2020-01-27): ");
         String orderDate = scanner.nextLine();
@@ -249,16 +239,6 @@ public class TunaTuncerHW1{
             sqlExc.printStackTrace();
         }
     }
-    public static void handle2(){
-        int customerId = Integer.parseInt(getCustomerInfo("id"));
-        int productId = Integer.parseInt(getProductInfo("id"));
-        int branchId = Integer.parseInt(getBranchInfo("id"));
-        String orderDate = getOrderDate();
-        addOrder(customerId, productId, branchId, orderDate);
-        int quantity = getQuantity(productId, branchId);
-        uptadeStock(productId, branchId ,quantity);
-    }
-
     public static void listCustomerInfo(String info){
         boolean firstEntrance = true;
         try{
@@ -305,10 +285,6 @@ public class TunaTuncerHW1{
             sqlExc.printStackTrace();
         }
     }
-    public static void handle3(){
-        listCustomerInfo("");
-    }
-
     public static void listCustomersOrders(int customerId){
         boolean firstEntrance = true;
         try{
@@ -326,7 +302,7 @@ public class TunaTuncerHW1{
                     int productId = resultSet.getInt("pid");
                     int branchId = resultSet.getInt("bid");
                     System.out.println("OrderDate:" + orderDate+ "\tID:" + customerId + "\tProductID:" + productId
-                    + "\tBranchID:" + branchId);
+                            + "\tBranchID:" + branchId);
                 }
             }
             System.out.println("##############################################");
@@ -335,11 +311,6 @@ public class TunaTuncerHW1{
             sqlExc.printStackTrace();
         }
     }
-    public static void handle4(){
-        int customerId = Integer.parseInt(getCustomerInfo("id"));
-        listCustomersOrders(customerId);
-    }
-
     public static ArrayList<String> getOrderDatesFromDb(int customerId){
         ArrayList<String> orderDates = new ArrayList<String>();
         try{
@@ -379,14 +350,6 @@ public class TunaTuncerHW1{
             sqlExc.printStackTrace();
         }
     }
-    public static void handle5(){
-        int customerId = Integer.parseInt(getCustomerInfo("id"));
-        ArrayList<String> customerDates = getOrderDatesFromDb(customerId);
-        Collections.sort(customerDates);
-        Collections.reverse(customerDates);
-        listRecentOrders(customerDates);
-    }
-
     public static void listBranchInfo(){
         boolean firstEntrance = true;
         try{
@@ -410,10 +373,6 @@ public class TunaTuncerHW1{
             sqlExc.printStackTrace();
         }
     }
-    public static void handle6(){
-        listBranchInfo();
-    }
-
     public static void listBranchsOrders(int branchId){
         boolean firstEntrance = true;
         try{
@@ -440,11 +399,6 @@ public class TunaTuncerHW1{
             sqlExc.printStackTrace();
         }
     }
-    public static void handle7(){
-        int branchId = Integer.parseInt(getBranchInfo("id"));
-        listBranchsOrders(branchId);
-    }
-
     public static String getBranchInfo(String info){
         System.out.print("Please enter branch " + info +": ");
         String branchInfo = scanner.nextLine();
@@ -512,12 +466,6 @@ public class TunaTuncerHW1{
             e.printStackTrace();
         }
     }
-    public static void handle8(){
-        String branchName = getBranchInfo("name");
-        String branchAddress = getBranchInfo("address");
-        createBranch(branchName, branchAddress);
-    }
-
     public static String getProductInfo(String info){
         System.out.print("Please enter product " + info +": ");
         String productInfo = scanner.nextLine();
@@ -602,13 +550,6 @@ public class TunaTuncerHW1{
             e.printStackTrace();
         }
     }
-    public static void handle9(){
-        String productName = getProductInfo("name");
-        String productDescription = getProductInfo("description");
-        float productPrice = Float.parseFloat(getProductInfo("price"));
-        createProduct(productName, productDescription, productPrice);
-    }
-
     public static String getStockInfo(String info){
         String stockInfo = "";
         if(info.equals("product") || info.equals("branch")){
@@ -677,18 +618,6 @@ public class TunaTuncerHW1{
             e.printStackTrace();
         }
     }
-    public static void handle10(){
-        int productId = Integer.parseInt(getStockInfo("product"));
-        int branchId = Integer.parseInt(getStockInfo("branch"));
-        int quantity = Integer.parseInt(getStockInfo("quantity"));
-        addStock(quantity, productId, branchId);
-    }
-
-    public static void handle11(){
-        String customerPhoneNumber = getCustomerInfo("phone number");
-        listCustomerInfo(customerPhoneNumber);
-    }
-
     public static void deleteCustomersInfo(int customerId){
         try{
             Statement statement = connection.createStatement();
@@ -702,13 +631,92 @@ public class TunaTuncerHW1{
             sqlExc.printStackTrace();
         }
     }
+
+
+    public static void handle1(){
+        String customerName = getCustomerInfo("name");
+        String customerSurname = getCustomerInfo("surname");
+        String customerAddress = getCustomerInfo("address");
+        String customerPhoneNumber = getCustomerInfo("phone number");
+        addCustomer(customerName, customerSurname, customerAddress, customerPhoneNumber);
+    }
+
+
+    public static void handle2(){
+        int customerId = Integer.parseInt(getCustomerInfo("id"));
+        int productId = Integer.parseInt(getProductInfo("id"));
+        int branchId = Integer.parseInt(getBranchInfo("id"));
+        String orderDate = getOrderDate();
+        addOrder(customerId, productId, branchId, orderDate);
+        int quantity = getQuantity(productId, branchId);
+        uptadeStock(productId, branchId ,quantity);
+    }
+
+
+    public static void handle3(){
+        listCustomerInfo("");
+    }
+
+
+    public static void handle4(){
+        int customerId = Integer.parseInt(getCustomerInfo("id"));
+        listCustomersOrders(customerId);
+    }
+
+
+    public static void handle5(){
+        int customerId = Integer.parseInt(getCustomerInfo("id"));
+        ArrayList<String> customerDates = getOrderDatesFromDb(customerId);
+        Collections.sort(customerDates);
+        Collections.reverse(customerDates);
+        listRecentOrders(customerDates);
+    }
+
+
+    public static void handle6(){
+        listBranchInfo();
+    }
+
+
+    public static void handle7(){
+        int branchId = Integer.parseInt(getBranchInfo("id"));
+        listBranchsOrders(branchId);
+    }
+
+
+    public static void handle8(){
+        String branchName = getBranchInfo("name");
+        String branchAddress = getBranchInfo("address");
+        createBranch(branchName, branchAddress);
+    }
+
+
+    public static void handle9(){
+        String productName = getProductInfo("name");
+        String productDescription = getProductInfo("description");
+        float productPrice = Float.parseFloat(getProductInfo("price"));
+        createProduct(productName, productDescription, productPrice);
+    }
+
+
+    public static void handle10(){
+        int productId = Integer.parseInt(getStockInfo("product"));
+        int branchId = Integer.parseInt(getStockInfo("branch"));
+        int quantity = Integer.parseInt(getStockInfo("quantity"));
+        addStock(quantity, productId, branchId);
+    }
+
+    public static void handle11(){
+        String customerPhoneNumber = getCustomerInfo("phone number");
+        listCustomerInfo(customerPhoneNumber);
+    }
+
+
     public static void handle12(){
         int customerId = Integer.parseInt(getCustomerInfo("id"));
         deleteCustomersInfo(customerId);
     }
-    public static void handle13(){
-
-    }
+    public static void handle13(){ }
     public static void functionHandler(){
         if(userInput==1){
             handle1();
