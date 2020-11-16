@@ -11,7 +11,7 @@ import java.util.Scanner;
 // Handle8()  DONE
 // Handle9()  DONE
 // Handle10() DONE
-// Handle11() DONE BUT THERE IS A DUPLICATION WITH HANDLE3
+// Handle11() DONE BUT NOT PERFECT
 // Handle12()
 // Handle13() NOTHING TO BE DONE
 
@@ -161,34 +161,54 @@ public class TunaTuncerHW1{
         System.out.println(2);
     }
 
-    public static void listCustomerInfo(){
+    public static void listCustomerInfo(String info){
         boolean firstEntrance = true;
         try{
             Statement statement = connection.createStatement();
             String selectQuery = "SELECT * FROM Customer";
             ResultSet resultSet = statement.executeQuery(selectQuery);
-            while(resultSet.next()){
-                if(firstEntrance){
-                    System.out.println("##############################################");
-                    System.out.println("CUSTOMER INFORMATION");
+            if(info.equals("")) {
+                while (resultSet.next()) {
+                    if (firstEntrance) {
+                        System.out.println("##############################################");
+                        System.out.println("CUSTOMER INFORMATION");
+                    }
+                    firstEntrance = false;
+                    int customerId = resultSet.getInt("cid");
+                    String customerName = resultSet.getString("fname");
+                    String customerSurname = resultSet.getString("lname");
+                    String customerAddress = resultSet.getString("caddress");
+                    String customerPhoneNumber = resultSet.getString("pnum");
+                    System.out.println("ID:" + customerId + "\tName:" + customerName + "\tSurname:" + customerSurname
+                            + "\tAddress:" + customerAddress + "\tPhoneNumber:" + customerPhoneNumber);
                 }
-                firstEntrance = false;
-                int customerId = resultSet.getInt("cid");
-                String customerName = resultSet.getString("fname");
-                String customerSurname = resultSet.getString("lname");
-                String customerAddress = resultSet.getString("caddress");
-                String customerPhoneNumber = resultSet.getString("pnum");
-                System.out.println("ID:" + customerId + "\tName:" + customerName + "\tSurname:" + customerSurname
-                + "\tAddress:" + customerAddress + "\tPhoneNumber:" + customerPhoneNumber);
+                System.out.println("##############################################");
             }
-            System.out.println("##############################################");
+            // List via phone number
+            else{
+                while(resultSet.next()){
+                    if(info.equals(resultSet.getString("pnum"))){
+                        if(firstEntrance){
+                            System.out.println("##############################################");
+                            System.out.println("CUSTOMER INFORMATION");
+                        }
+                        firstEntrance = false;
+                        int customerId = resultSet.getInt("cid");
+                        String customerName = resultSet.getString("fname");
+                        String customerSurname = resultSet.getString("lname");
+                        String customerAddress = resultSet.getString("caddress");
+                        System.out.println("ID:" + customerId + "\tName:" + customerName + "\tSurname:" + customerSurname
+                                + "\tAddress:" + customerAddress + "\tPhoneNumber:" + info);
+                    }
+                }
+            }
         }
         catch(SQLException sqlExc){
             sqlExc.printStackTrace();
         }
     }
     public static void handle3(){
-        listCustomerInfo();
+        listCustomerInfo("");
     }
 
     public static void listCustomersOrders(int customerId){
@@ -431,36 +451,10 @@ public class TunaTuncerHW1{
         int quantity = Integer.parseInt(getStockInfo("quantity"));
         createStock(quantity, productId, branchId);
     }
-    public static void listCustomerInfoViaPhoneNumber(String customerPhoneNumber){
-        boolean firstEntrance = true;
-        try{
-            Statement statement = connection.createStatement();
-            String selectQuery = "SELECT * FROM Customer";
-            ResultSet resultSet = statement.executeQuery(selectQuery);
-            while(resultSet.next()){
-                if(customerPhoneNumber.equals(resultSet.getString("pnum"))){
-                    if(firstEntrance){
-                        System.out.println("##############################################");
-                        System.out.println("CUSTOMER INFORMATION");
-                    }
-                    firstEntrance = false;
-                    int customerId = resultSet.getInt("cid");
-                    String customerName = resultSet.getString("fname");
-                    String customerSurname = resultSet.getString("lname");
-                    String customerAddress = resultSet.getString("caddress");
-                    System.out.println("ID:" + customerId + "\tName:" + customerName + "\tSurname:" + customerSurname
-                            + "\tAddress:" + customerAddress + "\tPhoneNumber:" + customerPhoneNumber);
-                }
-            }
-        }
-        catch(SQLException sqlExc){
-            sqlExc.printStackTrace();
-        }
-    }
 
     public static void handle11(){
         String customerPhoneNumber = getCustomerInfo("phone number");
-        listCustomerInfoViaPhoneNumber(customerPhoneNumber);
+        listCustomerInfo(customerPhoneNumber);
     }
     public static void handle12(){
 
