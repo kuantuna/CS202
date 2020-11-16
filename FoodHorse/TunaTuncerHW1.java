@@ -1,4 +1,7 @@
+import javax.swing.plaf.nimbus.State;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 // Handle1()  DONE
@@ -159,16 +162,47 @@ public class TunaTuncerHW1{
     }
 
     public static String getOrderDate(){
-        System.out.print("Please enter order date. For ex(12.01.2020): ");
+        System.out.print("Please enter order date. For ex(2020-01-27): ");
         String orderDate = scanner.nextLine();
         while(true){
-            if(orderDate.length()==10) {
-                //BURADA TARİH DÜZGÜN MÜ KONRTOL EDİLECEK!
-                break;
+            try{
+                if(orderDate.length()==10) {
+                    Integer.parseInt(orderDate.substring(8,10));
+                    if(Integer.parseInt(orderDate.substring(8,10))<=31 && Integer.parseInt(orderDate.substring(8,10))>=0){
+                        Integer.parseInt(orderDate.substring(5,7));
+                        if(Integer.parseInt(orderDate.substring(5,7))<=12 && Integer.parseInt(orderDate.substring(5,7))>=0){
+                            Integer.parseInt(orderDate.substring(0,4));
+                            if(Integer.parseInt(orderDate.substring(0,4)) > 0){
+                                break;
+                            }
+                            else{
+                                System.out.println("Your year is not greater than 0");
+                                System.out.print("Please enter order date");
+                                orderDate = scanner.nextLine();
+                            }
+                        }
+                        else{
+                            System.out.println("Your month is not between 01-12");
+                            System.out.print("Please enter order date");
+                            orderDate = scanner.nextLine();
+                        }
+                    }
+                    else{
+                        System.out.println("Your day is not between 01-31");
+                        System.out.print("Please enter order date");
+                        orderDate = scanner.nextLine();
+                    }
+                }
+                System.out.println("Order date must be 10 characters. Like (1964-03-18)");
+                System.out.print("Please enter order date: ");
+                orderDate = scanner.nextLine();
             }
-            System.out.println("Order date must be 10 characters. Like (03.05.1984)");
-            System.out.print("Please enter order date: ");
-            orderDate = scanner.nextLine();
+            catch(Exception e){
+                System.out.println("There is a problem with the date input, please provide a valid one with the" +
+                        " (yyyy-mm-dd) format");
+                System.out.print("Please enter order date: ");
+                orderDate = scanner.nextLine();
+            }
         }
         return orderDate;
     }
@@ -304,8 +338,53 @@ public class TunaTuncerHW1{
         int customerId = Integer.parseInt(getCustomerInfo("id"));
         listCustomersOrders(customerId);
     }
-    public static void handle5(){
 
+    public static ArrayList<String> getOrderDatesFromDb(int customerId){
+        ArrayList<String> orderDates = new ArrayList<String>();
+        try{
+            Statement statement = connection.createStatement();
+            String orderDateQuery = "SELECT * FROM Order";
+            ResultSet resultSet = statement.executeQuery(orderDateQuery);
+            while(resultSet.next()){
+                if(customerId == resultSet.getInt("cid")){
+                    orderDates.add(resultSet.getString("odate"));
+                }
+            }
+        }
+        catch(SQLException sqlExc){
+            sqlExc.printStackTrace();
+        }
+        return orderDates;
+    }
+    public static void listRecentOrders(ArrayList<String> customerDates){
+        while(customerDates.size() > 5){
+            customerDates.remove(customerDates.size()-1);
+        }
+        try{
+            Statement statement = connection.createStatement();
+            String orderQuery = "SELECT * FROM Order";
+            ResultSet resultSet = statement.executeQuery(orderQuery);
+            for(String date: customerDates){
+                while(resultSet.next()){
+                    if(resultSet.getString("odate").equals(date)){
+                        System.out.println("OrderDate:" + date + "\tCustomerId:" + resultSet.getInt("cid")
+                        + "\tProductId:" + resultSet.getInt("pid") + "\tBranchId:"
+                                        + resultSet.getInt("bid"));
+                    }
+                }
+            }
+
+        }
+        catch(SQLException sqlExc){
+            sqlExc.printStackTrace();
+        }
+    }
+    public static void handle5(){
+        int customerId = Integer.parseInt(getCustomerInfo("id"));
+        ArrayList<String> customerDates = getOrderDatesFromDb(customerId);
+        Collections.sort(customerDates);
+        Collections.reverse(customerDates);
+        listRecentOrders(customerDates);
     }
 
     public static void listBranchInfo(){
