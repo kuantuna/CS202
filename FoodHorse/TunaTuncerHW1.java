@@ -763,7 +763,19 @@ public class TunaTuncerHW1{
         int customerId = Integer.parseInt(getCustomerInfo("id"));
         deleteCustomersInfo(customerId);
     }
-    public static void handle13(){ }
+    public static void handle13(){
+        System.out.println("THANK YOU HOPE TO SEE YOU AGAIN!");
+        System.out.println("88                                  \n" +
+                "88                                  \n" +
+                "88                                  \n" +
+                "88,dPPYba,  8b       d8  ,adPPYba,  \n" +
+                "88P'    \"8a `8b     d8' a8P_____88  \n" +
+                "88       d8  `8b   d8'  8PP\"\"\"\"\"\"\"  \n" +
+                "88b,   ,a8\"   `8b,d8'   \"8b,   ,aa  \n" +
+                "8Y\"Ybbd8\"'      Y88'     `\"Ybbd8\"'  \n" +
+                "                d8'                 \n" +
+                "               d8'                  ");
+    }
     public static void handleFunctions(){
         if(userInput==1){
             handle1();
