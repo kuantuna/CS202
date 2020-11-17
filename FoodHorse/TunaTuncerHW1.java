@@ -155,18 +155,42 @@ public class TunaTuncerHW1{
         }
     }
     public static String getOrderDate(){
-        System.out.print("Please enter order date. For ex(2020-01-27): ");
+        System.out.print("Please enter order date. For ex(2020-01-27 17:51:07): ");
         String orderDate = scanner.nextLine();
         while(true){
             try{
-                if(orderDate.length()==10) {
+                if(orderDate.length()==19) {
                     Integer.parseInt(orderDate.substring(8,10));
                     if(Integer.parseInt(orderDate.substring(8,10))<=31 && Integer.parseInt(orderDate.substring(8,10))>=0){
                         Integer.parseInt(orderDate.substring(5,7));
                         if(Integer.parseInt(orderDate.substring(5,7))<=12 && Integer.parseInt(orderDate.substring(5,7))>=0){
                             Integer.parseInt(orderDate.substring(0,4));
                             if(Integer.parseInt(orderDate.substring(0,4)) > 0){
-                                break;
+                                Integer.parseInt(orderDate.substring(11,13));
+                                if(Integer.parseInt(orderDate.substring(11,13))<24 && Integer.parseInt(orderDate.substring(11,13))>=0){
+                                    Integer.parseInt(orderDate.substring(14,16));
+                                    if(Integer.parseInt(orderDate.substring(14,16))>=0 && Integer.parseInt(orderDate.substring(14,16))<60){
+                                        Integer.parseInt(orderDate.substring(17,19));
+                                        if(Integer.parseInt(orderDate.substring(17,19))>=0 && Integer.parseInt(orderDate.substring(17,19))<60){
+                                            break;
+                                        }
+                                        else{
+                                            System.out.println("Your second is not between 0 and 60");
+                                            System.out.print("Please enter order date");
+                                            orderDate = scanner.nextLine();
+                                        }
+                                    }
+                                    else{
+                                        System.out.println("Your minute is not between 0 and 60");
+                                        System.out.print("Please enter order date");
+                                        orderDate = scanner.nextLine();
+                                    }
+                                }
+                                else{
+                                    System.out.println("Your hour is not between 0 and 24");
+                                    System.out.print("Please enter order date");
+                                    orderDate = scanner.nextLine();
+                                }
                             }
                             else{
                                 System.out.println("Your year is not greater than 0");
@@ -186,13 +210,13 @@ public class TunaTuncerHW1{
                         orderDate = scanner.nextLine();
                     }
                 }
-                System.out.println("Order date must be 10 characters. Like (1964-03-18)");
+                System.out.println("Order date must be 19 characters. Like 1964-03-18 07:03:54");
                 System.out.print("Please enter order date: ");
                 orderDate = scanner.nextLine();
             }
             catch(Exception e){
                 System.out.println("There is a problem with the date input, please provide a valid one with the" +
-                        " (yyyy-mm-dd) format");
+                        " (yyyy-mm-dd hh:mm:ss) format");
                 System.out.print("Please enter order date: ");
                 orderDate = scanner.nextLine();
             }
