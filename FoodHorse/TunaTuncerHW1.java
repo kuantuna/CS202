@@ -30,7 +30,7 @@ public class TunaTuncerHW1{
             connection = DriverManager.getConnection(URL, username, password);
         }
         catch(SQLException e){
-            e.printStackTrace();
+            System.out.println("There was an error establishing the connection");
         }
     }
 
@@ -40,7 +40,7 @@ public class TunaTuncerHW1{
                 connection.close();
         }
         catch(SQLException e){
-            e.printStackTrace();
+            System.out.println("There was an error closing the connection");
         }
     }
 
@@ -133,6 +133,7 @@ public class TunaTuncerHW1{
                 }
                 catch(SQLException sqlExc){
                     sqlExc.printStackTrace();
+                    System.out.println("There is a problem either creating statement or executing the query.");
                 }
             }
         }
@@ -148,8 +149,9 @@ public class TunaTuncerHW1{
             customerStatement.executeUpdate(addCustomerQuery);
             System.out.println("Customer has been added to the db successfully.");
         }
-        catch(SQLException e){
-            e.printStackTrace();
+        catch(SQLException sqlExc){
+            sqlExc.printStackTrace();
+            System.out.println("There is a problem either creating statement or executing the update.");
         }
     }
     public static String getOrderDate(){
@@ -204,9 +206,11 @@ public class TunaTuncerHW1{
                     + "VALUES('" + orderDate + "', '" + customerId + "', '" + productId
                     + "', '" + branchId + "')";
             statement.executeUpdate(addCustomerQuery);
+            System.out.println("Order has been added successfully.");
         }
-        catch(SQLException e){
-            e.printStackTrace();
+        catch(SQLException sqlExc){
+            sqlExc.printStackTrace();
+            System.out.println("There is a problem either creating statement or executing the update.");
         }
     }
     public static int getQuantity(int productId, int branchId){
@@ -224,6 +228,7 @@ public class TunaTuncerHW1{
         }
         catch(SQLException sqlExc){
             sqlExc.printStackTrace();
+            System.out.println("There is a problem either creating statement or executing the query.");
         }
         return quantity;
     }
@@ -234,9 +239,11 @@ public class TunaTuncerHW1{
             String updateQuery = "UPDATE Stock " + "SET quantity = " + quantity
                     + " WHERE (pid = " + productId + " AND bid = " + branchId + ")";
             statement.executeUpdate(updateQuery);
+            System.out.println("Stock has been updated successfully.");
         }
         catch(SQLException sqlExc){
             sqlExc.printStackTrace();
+            System.out.println("There is a problem either creating statement or executing the update.");
         }
     }
     public static void listCustomerInfo(String info){
@@ -248,7 +255,7 @@ public class TunaTuncerHW1{
             if(info.equals("")) {
                 while (resultSet.next()) {
                     if (firstEntrance) {
-                        System.out.println("##############################################");
+                        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                         System.out.println("CUSTOMER INFORMATION");
                     }
                     firstEntrance = false;
@@ -260,14 +267,14 @@ public class TunaTuncerHW1{
                     System.out.println("ID:" + customerId + "\tName:" + customerName + "\tSurname:" + customerSurname
                             + "\tAddress:" + customerAddress + "\tPhoneNumber:" + customerPhoneNumber);
                 }
-                System.out.println("##############################################");
+                System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             }
             // List via phone number
             else{
                 while(resultSet.next()){
                     if(info.equals(resultSet.getString("pnum"))){
                         if(firstEntrance){
-                            System.out.println("##############################################");
+                            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                             System.out.println("CUSTOMER INFORMATION");
                         }
                         firstEntrance = false;
@@ -283,6 +290,7 @@ public class TunaTuncerHW1{
         }
         catch(SQLException sqlExc){
             sqlExc.printStackTrace();
+            System.out.println("There is a problem either creating statement or executing the query.");
         }
     }
     public static void listCustomersOrders(int customerId){
@@ -294,7 +302,7 @@ public class TunaTuncerHW1{
             while(resultSet.next()){
                 if(customerId == resultSet.getInt("cid")){
                     if(firstEntrance){
-                        System.out.println("##############################################");
+                        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                         System.out.println("ORDER INFORMATION");
                     }
                     firstEntrance = false;
@@ -305,10 +313,11 @@ public class TunaTuncerHW1{
                             + "\tBranchID:" + branchId);
                 }
             }
-            System.out.println("##############################################");
+            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         }
         catch(SQLException sqlExc){
             sqlExc.printStackTrace();
+            System.out.println("There is a problem either creating statement or executing the query.");
         }
     }
     public static ArrayList<String> getOrderDatesFromDb(int customerId){
@@ -325,6 +334,7 @@ public class TunaTuncerHW1{
         }
         catch(SQLException sqlExc){
             sqlExc.printStackTrace();
+            System.out.println("There is a problem either creating statement or executing the query.");
         }
         return orderDates;
     }
@@ -348,6 +358,7 @@ public class TunaTuncerHW1{
         }
         catch(SQLException sqlExc){
             sqlExc.printStackTrace();
+            System.out.println("There is a problem either creating statement or executing the query.");
         }
     }
     public static void listBranchInfo(){
@@ -358,7 +369,7 @@ public class TunaTuncerHW1{
             ResultSet resultSet = statement.executeQuery(selectQuery);
             while(resultSet.next()){
                 if(firstEntrance){
-                    System.out.println("##############################################");
+                    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                     System.out.println("BRANCH INFORMATION");
                 }
                 firstEntrance = false;
@@ -367,10 +378,11 @@ public class TunaTuncerHW1{
                 String branchAddress = resultSet.getString("baddress");
                 System.out.println("BranchID:" + branchId + "\tBranchName:" + branchName + "\tBranchAddress:" + branchAddress);
             }
-            System.out.println("##############################################");
+            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         }
         catch(SQLException sqlExc){
             sqlExc.printStackTrace();
+            System.out.println("There is a problem either creating statement or executing the query.");
         }
     }
     public static void listBranchsOrders(int branchId){
@@ -382,7 +394,7 @@ public class TunaTuncerHW1{
             while(resultSet.next()){
                 if(branchId == resultSet.getInt("bid")){
                     if(firstEntrance){
-                        System.out.println("##############################################");
+                        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                         System.out.println("ORDER INFORMATION");
                     }
                     firstEntrance = false;
@@ -393,10 +405,11 @@ public class TunaTuncerHW1{
                             + "\tBranchID:" + branchId);
                 }
             }
-            System.out.println("##############################################");
+            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         }
         catch(SQLException sqlExc){
             sqlExc.printStackTrace();
+            System.out.println("There is a problem either creating statement or executing the query.");
         }
     }
     public static String getBranchInfo(String info){
@@ -450,6 +463,7 @@ public class TunaTuncerHW1{
                 }
                 catch(SQLException sqlExc){
                     sqlExc.printStackTrace();
+                    System.out.println("There is a problem either creating statement or executing the query.");
                 }
             }
         }
@@ -461,9 +475,11 @@ public class TunaTuncerHW1{
             String addBranchQuery = "INSERT INTO Branch(bname, baddress) "
                     + "VALUES('" + branchName + "', '" + branchAddress + "')";
             branchStatement.executeUpdate(addBranchQuery);
+            System.out.println("Branch has been created successfully.");
         }
-        catch(SQLException e){
-            e.printStackTrace();
+        catch(SQLException sqlExc){
+            sqlExc.printStackTrace();
+            System.out.println("There is a problem either creating statement or executing the update.");
         }
     }
     public static String getProductInfo(String info){
@@ -534,6 +550,7 @@ public class TunaTuncerHW1{
                 }
                 catch(SQLException sqlExc){
                     sqlExc.printStackTrace();
+                    System.out.println("There is a problem either creating statement or executing the query.");
                 }
             }
         }
@@ -545,9 +562,11 @@ public class TunaTuncerHW1{
             String addProductQuery = "INSERT INTO Product(pname, pdescription, price) "
                     + "VALUES('" + productName + "', '" + productDescription + "', '" + productPrice + "')";
             productStatement.executeUpdate(addProductQuery);
+            System.out.println("Product has been created successfully.");
         }
-        catch(SQLException e){
-            e.printStackTrace();
+        catch(SQLException sqlExc){
+            sqlExc.printStackTrace();
+            System.out.println("There is a problem either creating statement or executing the update.");
         }
     }
     public static String getStockInfo(String info){
@@ -564,7 +583,7 @@ public class TunaTuncerHW1{
                     String selectQuery = "SELECT * FROM " + info;
                     ResultSet resultSet = statement.executeQuery(selectQuery);
                     while(resultSet.next()){
-                        int id = resultSet.getInt(info.substring(0,1) + "id");
+                        int id = resultSet.getInt(info.charAt(0) + "id");
                         if(id == Integer.parseInt(stockInfo)){
                             brk = true;
                             break;
@@ -582,6 +601,7 @@ public class TunaTuncerHW1{
                 }
                 catch(SQLException sqlExc){
                     sqlExc.printStackTrace();
+                    System.out.println("There is a problem either creating statement or executing the query.");
                 }
             }
         }
@@ -613,9 +633,11 @@ public class TunaTuncerHW1{
             String addStockQuery = "INSERT INTO Stock(quantity, pid, bid) "
                     + "VALUES('" + quantity + "', '" + productId + "', '" + branchId + "')";
             stockStatement.executeUpdate(addStockQuery);
+            System.out.println("Stock has been added successfully");
         }
-        catch(SQLException e){
-            e.printStackTrace();
+        catch(SQLException sqlExc){
+            sqlExc.printStackTrace();
+            System.out.println("There is a problem either creating statement or executing the update.");
         }
     }
     public static void deleteCustomersInfo(int customerId){
@@ -629,6 +651,7 @@ public class TunaTuncerHW1{
         }
         catch(SQLException sqlExc){
             sqlExc.printStackTrace();
+            System.out.println("There is a problem either creating statement or executing the update.");
         }
     }
 
@@ -717,7 +740,7 @@ public class TunaTuncerHW1{
         deleteCustomersInfo(customerId);
     }
     public static void handle13(){ }
-    public static void functionHandler(){
+    public static void handleFunctions(){
         if(userInput==1){
             handle1();
         }
@@ -765,13 +788,14 @@ public class TunaTuncerHW1{
             while(userInput != 13){
                 displayMenu();
                 getUserInput();
-                functionHandler();
+                handleFunctions();
             }
             scanner.close();
             closeConnection();
         }
         catch(Exception e){
             e.printStackTrace();
+            System.out.println("There is a problem in the main function.");
         }
     }
 }
