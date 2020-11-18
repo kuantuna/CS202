@@ -14,7 +14,7 @@ import java.util.Scanner;
 // Handle9()  DONE - TESTED WORKS GREAT
 // Handle10() DONE - TESTED WORKS GREAT
 // Handle11() DONE - TESTED WORKS GREAT
-// Handle12() DONE
+// Handle12() DONE - TESTED WORKS GREAT
 // Handle13() DONE - TESTED WORKS GREAT
 
 public class TunaTuncerHW1{
