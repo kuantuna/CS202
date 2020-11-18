@@ -3,19 +3,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
 
-// Handle1()  DONE
-// Handle2()  DONE
-// Handle3()  DONE
-// Handle4()  DONE     CAN BE IMPROVED
-// Handle5()  DONE
-// Handle6()  DONE
-// Handle7()  DONE
-// Handle8()  DONE
-// Handle9()  DONE
-// Handle10() DONE
-// Handle11() DONE
+// Handle1()  DONE - TESTED WORKS GREAT
+// Handle2()  DONE - TESTED WORKS GREAT
+// Handle3()  DONE - TESTED WORKS GREAT
+// Handle4()  DONE - TESTED WORKS GREAT AMA BU CUSTOMERİN ORDERI YOKTUR EKLENEBİLİR
+// Handle5()  DONE - TESTED WORKS GREAT AMA BU CUSTOMERİN ORDERI YOKTUR EKLENEBİLİR
+// Handle6()  DONE - TESTED WORKS GREAT
+// Handle7()  DONE - TESTED WORKS GREAT
+// Handle8()  DONE - TESTED WORKS GREAT
+// Handle9()  DONE - TESTED WORKS GREAT
+// Handle10() DONE - TESTED WORKS GREAT
+// Handle11() DONE - TESTED WORKS GREAT
 // Handle12() DONE
-// Handle13() NOTHING TO BE DONE
+// Handle13() DONE - TESTED WORKS GREAT
 
 public class TunaTuncerHW1{
     private static final String URL = "jdbc:mysql://localhost:3306/FoodHorse?useSSL=false";
@@ -83,16 +83,30 @@ public class TunaTuncerHW1{
         }
     }
     public static String getCustomerInfo(String info){
-        System.out.print("Please enter customer " + info +": ");
+        if(info.equals("address")) {
+            System.out.print("Please enter customer " + info + " (only city for simplicity): ");
+        }
+        else{
+            System.out.print("Please enter customer " + info + ": ");
+        }
         String customerInfo = scanner.nextLine();
         if(info.equals("phone number")){
-            while(true){
-                if(customerInfo.length()==11) {
-                    break;
+            while (true) {
+                try {
+                    if (customerInfo.length() == 11) {
+                        Long.parseLong(customerInfo);
+                        break;
+                    }
+                    System.out.println("Phone number must be 11 digits. Like (05551112233)");
+                    System.out.print("Please enter customer phone number: ");
+                    customerInfo = scanner.nextLine();
+
                 }
-                System.out.println("Phone number must be 11 digits. Like (05551112233)");
-                System.out.print("Please enter customer phone number: ");
-                customerInfo = scanner.nextLine();
+                catch (Exception e) {
+                    System.out.println("Your input is invalid.");
+                    System.out.print("Please enter customer phone number: ");
+                    customerInfo = scanner.nextLine();
+                }
             }
         }
         else if(info.equals("name")||info.equals("surname")||info.equals("address")) {
@@ -176,43 +190,45 @@ public class TunaTuncerHW1{
                                         }
                                         else{
                                             System.out.println("Your second is not between 0 and 60");
-                                            System.out.print("Please enter order date");
+                                            System.out.print("Please enter order date: ");
                                             orderDate = scanner.nextLine();
                                         }
                                     }
                                     else{
                                         System.out.println("Your minute is not between 0 and 60");
-                                        System.out.print("Please enter order date");
+                                        System.out.print("Please enter order date: ");
                                         orderDate = scanner.nextLine();
                                     }
                                 }
                                 else{
                                     System.out.println("Your hour is not between 0 and 24");
-                                    System.out.print("Please enter order date");
+                                    System.out.print("Please enter order date: ");
                                     orderDate = scanner.nextLine();
                                 }
                             }
                             else{
                                 System.out.println("Your year is not greater than 0");
-                                System.out.print("Please enter order date");
+                                System.out.print("Please enter order date: ");
                                 orderDate = scanner.nextLine();
                             }
                         }
                         else{
                             System.out.println("Your month is not between 01-12");
-                            System.out.print("Please enter order date");
+                            System.out.print("Please enter order date: ");
                             orderDate = scanner.nextLine();
                         }
                     }
                     else{
                         System.out.println("Your day is not between 01-31");
-                        System.out.print("Please enter order date");
+                        System.out.print("Please enter order date: ");
                         orderDate = scanner.nextLine();
                     }
                 }
-                System.out.println("Order date must be 19 characters. Like 1964-03-18 07:03:54");
-                System.out.print("Please enter order date: ");
-                orderDate = scanner.nextLine();
+                else {
+                    System.out.println("Order date must be 19 characters. Like 1964-03-18 07:03:54");
+                    System.out.print("Please enter order date: ");
+                    orderDate = scanner.nextLine();
+                }
             }
             catch(Exception e){
                 System.out.println("There is a problem with the date input, please provide a valid one with the" +
@@ -222,6 +238,25 @@ public class TunaTuncerHW1{
             }
         }
         return orderDate;
+    }
+    public static boolean checkStock(int productId, int branchId){
+        boolean isExist = false;
+        try{
+            Statement statement = connection.createStatement();
+            String selectQuery = "SELECT * FROM Stock";
+            ResultSet resultSet = statement.executeQuery(selectQuery);
+            while(resultSet.next()){
+                if(productId == resultSet.getInt("pid") && branchId == resultSet.getInt("bid")){
+                    isExist = true;
+                    break;
+                }
+            }
+        }
+        catch(SQLException sqlExc){
+            sqlExc.printStackTrace();
+            System.out.println("There is a problem either creating statement or executing the query.");
+        }
+        return isExist;
     }
     public static void addOrder(int customerId, int productId, int branchId, String orderDate){
         try{
@@ -362,7 +397,7 @@ public class TunaTuncerHW1{
         }
         return orderDates;
     }
-    public static void listRecentOrders(ArrayList<String> customerDates){
+    public static void listRecentOrders(ArrayList<String> customerDates, int customerId){
         while(customerDates.size() > 5){
             customerDates.remove(customerDates.size()-1);
         }
@@ -372,7 +407,7 @@ public class TunaTuncerHW1{
             for(String date: customerDates){
                 ResultSet resultSet = statement.executeQuery(orderQuery);
                 while(resultSet.next()){
-                    if(resultSet.getString("odate").equals(date)){
+                    if(resultSet.getString("odate").equals(date) && customerId==resultSet.getInt("cid")){
                         System.out.println("OrderDate:" + date + "\tCustomerId:" + resultSet.getInt("cid")
                                 + "\tProductId:" + resultSet.getInt("pid") + "\tBranchId:"
                                 + resultSet.getInt("bid"));
@@ -437,7 +472,12 @@ public class TunaTuncerHW1{
         }
     }
     public static String getBranchInfo(String info){
-        System.out.print("Please enter branch " + info +": ");
+        if(info.equals("address")){
+            System.out.print("Please enter branch " + info + " (only city for simplicity): ");
+        }
+        else{
+            System.out.print("Please enter branch " + info +": ");
+        }
         String branchInfo = scanner.nextLine();
         if(info.equals("name")){
             while(true){
@@ -538,6 +578,7 @@ public class TunaTuncerHW1{
                     }
                     else{
                         System.out.print("Price must be greater than 0. Please enter price: ");
+                        productInfo = scanner.nextLine();
                     }
                 }
                 catch(Exception e) {
@@ -690,13 +731,19 @@ public class TunaTuncerHW1{
 
 
     public static void handle2(){
-        int customerId = Integer.parseInt(getCustomerInfo("id"));
         int productId = Integer.parseInt(getProductInfo("id"));
         int branchId = Integer.parseInt(getBranchInfo("id"));
-        String orderDate = getOrderDate();
-        addOrder(customerId, productId, branchId, orderDate);
-        int quantity = getQuantity(productId, branchId);
-        uptadeStock(productId, branchId ,quantity);
+        if(checkStock(productId, branchId)){
+            int customerId = Integer.parseInt(getCustomerInfo("id"));
+            String orderDate = getOrderDate();
+            addOrder(customerId, productId, branchId, orderDate);
+            int quantity = getQuantity(productId, branchId);
+            uptadeStock(productId, branchId ,quantity);
+        }
+        else{
+            System.out.println("Sorry, the product you have specified is not in the stock of the" +
+                    " branch you have specified.");
+        }
     }
 
 
@@ -716,7 +763,7 @@ public class TunaTuncerHW1{
         ArrayList<String> customerDates = getOrderDatesFromDb(customerId);
         Collections.sort(customerDates);
         Collections.reverse(customerDates);
-        listRecentOrders(customerDates);
+        listRecentOrders(customerDates, customerId);
     }
 
 
@@ -765,7 +812,8 @@ public class TunaTuncerHW1{
     }
     public static void handle13(){
         System.out.println("THANK YOU HOPE TO SEE YOU AGAIN!");
-        System.out.println("88                                  \n" +
+        System.out.println(
+                "88                                  \n" +
                 "88                                  \n" +
                 "88                                  \n" +
                 "88,dPPYba,  8b       d8  ,adPPYba,  \n" +
