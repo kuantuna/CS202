@@ -3,20 +3,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
 
-// Handle1()  DONE - TESTED WORKS GREAT
-// Handle2()  DONE - TESTED WORKS GREAT
-// Handle3()  DONE - TESTED WORKS GREAT
-// Handle4()  DONE - TESTED WORKS GREAT AMA BU CUSTOMERİN ORDERI YOKTUR EKLENEBİLİR
-// Handle5()  DONE - TESTED WORKS GREAT AMA BU CUSTOMERİN ORDERI YOKTUR EKLENEBİLİR
-// Handle6()  DONE - TESTED WORKS GREAT
-// Handle7()  DONE - TESTED WORKS GREAT
-// Handle8()  DONE - TESTED WORKS GREAT
-// Handle9()  DONE - TESTED WORKS GREAT
-// Handle10() DONE - TESTED WORKS GREAT
-// Handle11() DONE - TESTED WORKS GREAT
-// Handle12() DONE - TESTED WORKS GREAT
-// Handle13() DONE - TESTED WORKS GREAT
-
 public class TunaTuncerHW1{
     private static final String URL = "jdbc:mysql://localhost:3306/FoodHorse?useSSL=false";
     private static final String username = System.getenv("UNAME");
@@ -504,7 +490,6 @@ public class TunaTuncerHW1{
             while(true){
                 try{
                     Integer.parseInt(branchInfo);
-                    // I need to check if it exists in the db.
                     Statement statement = connection.createStatement();
                     String selectQuery = "SELECT * FROM Branch";
                     ResultSet resultSet = statement.executeQuery(selectQuery);
@@ -643,7 +628,6 @@ public class TunaTuncerHW1{
             while(true){
                 try{
                     Integer.parseInt(stockInfo);
-                    // I need to check if it exists in the db.
                     Statement statement = connection.createStatement();
                     String selectQuery = "SELECT * FROM " + info;
                     ResultSet resultSet = statement.executeQuery(selectQuery);
