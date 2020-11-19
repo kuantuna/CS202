@@ -1,7 +1,7 @@
 CREATE DATABASE IF NOT EXISTS FoodHorse;
 
 CREATE TABLE IF NOT EXISTS FoodHorse.Customer(
-    cid int AUTO_INCREMENT PRIMARY KEY ,
+    cid int AUTO_INCREMENT PRIMARY KEY,
     fname varchar(30) NOT NULL,
     lname varchar(30) NOT NULL,
     caddress varchar(30) NOT NULL,
@@ -21,15 +21,15 @@ CREATE TABLE IF NOT EXISTS FoodHorse.Product(
     price float NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS FoodHorse.Order(
-    oid int AUTO_INCREMENT PRIMARY KEY,
-    odate varchar(10) NOT NULL,
+CREATE TABLE IF NOT EXISTS FoodHorse.Orders(
+    odate varchar(19) NOT NULL,
     cid int,
     pid int,
     bid int,
     FOREIGN KEY (cid) REFERENCES FoodHorse.Customer(cid),
     FOREIGN KEY (pid) REFERENCES FoodHorse.Product(pid),
-    FOREIGN KEY (bid) REFERENCES FoodHorse.Branch(bid)
+    FOREIGN KEY (bid) REFERENCES FoodHorse.Branch(bid),
+    PRIMARY KEY (odate, cid, pid, bid)
 );
 
 CREATE TABLE IF NOT EXISTS FoodHorse.Stock(
@@ -37,5 +37,6 @@ CREATE TABLE IF NOT EXISTS FoodHorse.Stock(
     pid int,
     bid int,
     FOREIGN KEY (pid) REFERENCES FoodHorse.Product(pid),
-    FOREIGN KEY (bid) REFERENCES FoodHorse.Branch(bid)
+    FOREIGN KEY (bid) REFERENCES FoodHorse.Branch(bid),
+    PRIMARY KEY (pid, bid)
 );
